@@ -2,7 +2,7 @@
     "taskDefinitionArn": "arn:aws:ecs:eu-west-2:430472357735:task-definition/ai-town-crier-twitter:1",
     "containerDefinitions": [
         {
-            "name": "ai-town-crier",
+            "name": "ai-town-crier-twitter",
             "image": "430472357735.dkr.ecr.eu-west-2.amazonaws.com/ai-town-crier:234ad59a271581c1a39b35ba740a1291dfab19b8",
             "cpu": 1024,
             "portMappings": [
