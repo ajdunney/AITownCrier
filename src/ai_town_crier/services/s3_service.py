@@ -1,6 +1,6 @@
 import os
 import boto3
-from botocore.exceptions import NoCredentialsError
+from botocore.exceptions import NoCredentialsError, ClientError
 from utils.logger import get_logger
 from utils.general import get_day_datetime, save_dicts_to_json
 
@@ -28,8 +28,25 @@ def download_from_s3(bucket_directory, directory):
     except NoCredentialsError as e:
         logger.error(f'No AWS credentials found: {e}')
 
-
     return files
+
+
+def download_file_from_s3(bucket_name, s3_file_name, local_file_name):
+    logger.info(f'Downloading {s3_file_name} -> {local_file_name} from bucket {bucket_name}')
+    s3 = boto3.client('s3')
+    try:
+        s3.download_file(bucket_name, s3_file_name, local_file_name)
+        logger.info('Download complete')
+    except NoCredentialsError:
+        logger.error("No AWS credentials were found.")
+    except ClientError as e:
+        if e.response['Error']['Code'] == "404":
+            logger.warning(f'File not found {s3_file_name} in {bucket_name}')
+            raise FileNotFoundError
+        else:
+            raise
+    except Exception as e:
+        logger.error(f"Something went wrong: {e}")
 
 
 def get_articles(bucket, directory, save_dir):
@@ -37,6 +54,18 @@ def get_articles(bucket, directory, save_dir):
     news_stories = download_from_s3(bucket, directory)
     save_dicts_to_json(news_stories, save_dir)
     return
+
+
+def list_jpgs(bucket_name, prefix):
+    s3 = boto3.resource('s3')
+    jpgs = []
+    bucket = s3.Bucket(bucket_name)
+    for obj in bucket.objects.filter(Prefix=prefix):
+        if obj.key.endswith('.jpg'):
+            print(obj.key)
+            jpgs.append(obj.key)
+
+    return jpgs
 
 
 def upload_to_s3(bucket_name, input_filepath, destination_s3_folder):
@@ -50,9 +79,8 @@ def upload_to_s3(bucket_name, input_filepath, destination_s3_folder):
     except NoCredentialsError:
         print('No AWS credentials found.')
     except:
-        print('Some other error occured')
+        print('Some other error occurred')
     return
-
 
 if __name__ == '__main__':
     get_articles(bucket='medieval-news-press',

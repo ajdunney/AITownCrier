@@ -38,11 +38,29 @@ def add_to_dict(main_dict, list1, list2):
     return main_dict
 
 
+def load_dict_from_json(file_path):
+    with open(file_path, 'r') as f:
+        return json.load(f)
+
+
 def save_dicts_to_json(dicts, file_path):
     logger.info(f'Saving dictionary to {file_path}')
     with open(file_path, 'w') as f:
         json.dump(dicts, f)
 
+
+def load_list_from_txt(file_path):
+    logger.info(f'Loading {file_path} locally')
+    with open(file_path, 'r') as file:
+        tweets = file.readlines()
+    return [tweet.strip() for tweet in tweets]
+
+
+def save_list_to_txt(file_path, data_list):
+    logger.info(f'Saving file locally to {file_path}')
+    with open(file_path, 'w') as file:
+        for item in data_list:
+            file.write(str(item) + '\n')
 
 def check_string(s, val):
     s = s.translate(str.maketrans('', '', string.punctuation))
