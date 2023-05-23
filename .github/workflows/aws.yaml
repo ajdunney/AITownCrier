@@ -83,9 +83,9 @@ jobs:
         wait-for-service-stability: true
           
     - name: Deploy Amazon ECS LLM task definition
-        id: deploy-ecs-llm-task
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.llm-task-def.outputs.task-definition }}
-          cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true
+      id: deploy-ecs-llm-task
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.llm-task-def.outputs.task-definition }}
+        cluster: ${{ env.ECS_CLUSTER }}
+        wait-for-service-stability: true
