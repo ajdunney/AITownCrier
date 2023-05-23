@@ -29,15 +29,11 @@ def run_town_crier(raw_input_path, raw_output_path, clean_output_path):
     d = None
     for _, batch in enumerate(news_manager.get_titles(5)):
         logger.debug(f'Batch: {batch}')
-        print(batch)
         response = model.chat_with_prompt(prompt=prompt_manager.create_chat_prompt(), query=batch)
-        print(response)
         logger.debug(f'Response {response}')
         response_list = [line for line in response.split('\n') if line.strip()]
-        print(len(batch), len(response_list))
         d = add_to_dict(d, batch, response_list)
-        if _ > 10:
-            break
+
     save_dicts_to_json(d, raw_output_path)
     logger.info('Reopening outputs to check for sensitive content')
     with open(raw_output_path) as f:

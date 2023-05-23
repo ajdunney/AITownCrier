@@ -27,6 +27,7 @@ def download_from_s3(bucket_directory, directory):
 
     except NoCredentialsError as e:
         logger.error(f'No AWS credentials found: {e}')
+        raise NoCredentialsError
 
     return files
 
@@ -39,6 +40,7 @@ def download_file_from_s3(bucket_name, s3_file_name, local_file_name):
         logger.info('Download complete')
     except NoCredentialsError:
         logger.error("No AWS credentials were found.")
+        raise NoCredentialsError
     except ClientError as e:
         if e.response['Error']['Code'] == "404":
             logger.warning(f'File not found {s3_file_name} in {bucket_name}')
@@ -51,7 +53,10 @@ def download_file_from_s3(bucket_name, s3_file_name, local_file_name):
 
 def get_articles(bucket, directory, save_dir):
     logger.info('Getting articles')
-    news_stories = download_from_s3(bucket, directory)
+    try:
+        news_stories = download_from_s3(bucket, directory)
+    except NoCredentialsError:
+        raise
     save_dicts_to_json(news_stories, save_dir)
     return
 
@@ -82,7 +87,3 @@ def upload_to_s3(bucket_name, input_filepath, destination_s3_folder):
         print('Some other error occurred')
     return
 
-if __name__ == '__main__':
-    get_articles(bucket='medieval-news-press',
-                 directory=os.path.join('articles', get_day_datetime()),
-                 save_dir='resources/data.json')

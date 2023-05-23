@@ -51,15 +51,11 @@ class TwitterBot:
     def post_tweet(self, text, ids):
         self.client.create_tweet(text=text, media_ids=ids)
 
-    def post_tweet_with_media(self, text, ids):
-        pass
-
 
 def run_bot(bucket_name, news_data, clean_data_path):
     bot = TwitterBot()
 
     local_clean_path = 'resources/outputs_clean_dl.json'
-    news_list = load_dict_from_json(news_data)
 
     download_file_from_s3(bucket_name, clean_data_path, local_clean_path)
     clean_dict = load_dict_from_json(local_clean_path)

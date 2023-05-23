@@ -10,20 +10,26 @@ logger = get_logger(__name__)
 
 
 def main():
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(current_dir)
+
     parser = argparse.ArgumentParser(description='AI Town Crier')
     parser.add_argument('--service', type=str, help='Service to initialize (llm or twitter)')
     args = parser.parse_args()
     service = args.service
     logger.info(f'Running script with {service}')
-
     day_string = get_day_datetime()
 
     bucket_name = 'medieval-news-press'
     news_data = 'resources/data.json'
 
-    get_articles(bucket=bucket_name,
-                 directory=os.path.join('articles', day_string),
-                 save_dir=news_data)
+    try:
+        get_articles(bucket=bucket_name,
+                     directory=os.path.join('articles', day_string),
+                     save_dir=news_data)
+    except Exception as e:
+        logger.warning(f'Cant download news from S3 {e}')
+        return
 
     if service == 'llm':
         llm_output = 'resources/outputs.json'
