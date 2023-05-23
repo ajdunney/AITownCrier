@@ -1,0 +1,94 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:eu-west-2:430472357735:task-definition/ai-town-crier-llm-logs:2",
+    "containerDefinitions": [
+        {
+            "name": "ai-town-crier-llm",
+            "image": "430472357735.dkr.ecr.eu-west-2.amazonaws.com/ai-town-crier:234ad59a271581c1a39b35ba740a1291dfab19b8",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "ai-town-crier-llm-80-tcp",
+                    "containerPort": 80,
+                    "hostPort": 80,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "command": [
+                "python",
+                "-u",
+                "/app/src/ai_town_crier/main.py",
+                "--service",
+                "llm"
+            ],
+            "environment": [],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "ulimits": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/ai-town-crier-llm-logs",
+                    "awslogs-create-group": "true",
+                    "awslogs-region": "eu-west-2",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            }
+        }
+    ],
+    "family": "ai-town-crier-llm-logs",
+    "taskRoleArn": "arn:aws:iam::430472357735:role/AmazonECSTaskRoleS3FullAccess",
+    "executionRoleArn": "arn:aws:iam::430472357735:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "revision": 2,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "3072",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "registeredAt": "2023-05-23T19:49:17.989Z",
+    "registeredBy": "arn:aws:iam::430472357735:root",
+    "tags": []
+}
