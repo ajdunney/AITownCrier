@@ -76,7 +76,7 @@ def run_bot(bucket_name, news_data, clean_data_path):
             logger.info(f'{filename} found in clean outputs')
 
     for key, value in imgs_output_dict.items():
-        if value in past_tweets:
+        if key in past_tweets:
             logger.info(f'{value} already posted today.')
         else:
             local_img_path = os.path.join('resources', os.path.basename(key))
@@ -85,6 +85,7 @@ def run_bot(bucket_name, news_data, clean_data_path):
             logger.info(f'Posting {value}')
             bot.post_tweet(text=value, ids=[ret.media_id_string])
             past_tweets.append(value)
+            past_tweets.append(key)
             local_tweet_path = 'resources/tweets.txt'
             save_list_to_txt(local_tweet_path, past_tweets)
             upload_to_s3(bucket_name=bucket_name,
