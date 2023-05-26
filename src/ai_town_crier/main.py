@@ -34,11 +34,16 @@ def main():
     if service == 'llm':
         llm_output = 'resources/outputs.json'
         llm_clean_output = 'resources/outputs_clean.json'
+        clean_prompts_output = 'resources/prompts_clean.json'
         run_town_crier(raw_input_path=news_data,
                        raw_output_path=llm_output,
-                       clean_output_path=llm_clean_output)
+                       clean_output_path=llm_clean_output,
+                       clean_prompts_output=clean_prompts_output)
         upload_to_s3(bucket_name=bucket_name,
                      input_filepath=llm_clean_output,
+                     destination_s3_folder=os.path.join('outputs/', day_string))
+        upload_to_s3(bucket_name=bucket_name,
+                     input_filepath=clean_prompts_output,
                      destination_s3_folder=os.path.join('outputs/', day_string))
 
     elif service == 'twitter':
